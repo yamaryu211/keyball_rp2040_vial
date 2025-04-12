@@ -39,6 +39,3 @@ NKRO_ENABLE = yes
 
 #エンコーダ、OLED、七色発行体も利用可能なので、お好みでどうぞ
 ENCODER_MAP_ENABLE = yes
-
-# Macのスリープ復帰問題を解決するための設定
-USB_DRIVER = tinyusb
