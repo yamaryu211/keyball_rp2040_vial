@@ -66,7 +66,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define OLED_TIMEOUT 10000 // ミリ秒
 
 // レイヤ―数追加
-#define DYNAMIC_KEYMAP_LAYER_COUNT 9
+#define DYNAMIC_KEYMAP_LAYER_COUNT 10
 
 #undef KEYBALL_SCROLL_DIV_DEFAULT
 // マウス、スクロール速度デフォルト値の設定

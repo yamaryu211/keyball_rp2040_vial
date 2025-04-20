@@ -48,6 +48,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define _SYM_MAC 6
 #define _FUNC_MAC 7
 #define _AML 8
+#define _KBD_SET 9
 
 //  Vialではカスタムキーコードはlib/keyball/keyball.hにて定義し、QK_KB_xxとして定義する
 //  enum custom_keycodes {
@@ -178,7 +179,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_F12  , LCTL(KC_F1) , KC_F2   , KC_F3   , KC_NO   ,                     KC_NO        , LALT(KC_LEFT)   , LALT(KC_RIGHT) , KC_NO      , KC_NO     ,
     _______ , _______     , _______ , _______ , _______ , _______ , _______ , _______      , _______         , _______        , _______    , _______
   ),
-   [_AML] = LAYOUT_universal(
+  [_AML] = LAYOUT_universal(
+    KC_NO    , KC_NO    , KC_NO   , DT_PRNT , SSNP_VRT ,                     KC_BRID , KC_BRIU , KC_MUTE , KC_VOLD , KC_VOLU ,
+    CPI_I100 , SCRL_DVI , AML_I50 , DT_UP   , SSNP_HOR ,                     KC_NO   , KC_BTN1 , KC_BTN2 , KC_NO   , _______ ,
+    CPI_D100 , SCRL_DVD , AML_D50 , DT_DOWN , SSNP_FRE ,                     KC_NO   , KC_NO   , KC_NO   , KC_NO   ,  EE_CLR ,
+    _______  , _______  , _______ , _______ , _______  , _______ , _______ , _______ , _______ , _______ , _______ , _______  
+  ),
+  [_KBD_SET] = LAYOUT_universal(
     KC_NO    , KC_NO    , KC_NO   , DT_PRNT , SSNP_VRT ,                     KC_BRID , KC_BRIU , KC_MUTE , KC_VOLD , KC_VOLU ,
     CPI_I100 , SCRL_DVI , AML_I50 , DT_UP   , SSNP_HOR ,                     KC_NO   , KC_BTN1 , KC_BTN2 , KC_NO   , _______ ,
     CPI_D100 , SCRL_DVD , AML_D50 , DT_DOWN , SSNP_FRE ,                     KC_NO   , KC_NO   , KC_NO   , KC_NO   ,  EE_CLR ,
@@ -273,7 +280,11 @@ layer_state_t layer_state_set_user(layer_state_t state) {
         case _AML:
             rgblight_sethsv_noeeprom(213, 255, 50); // HSV_MAGENTA
             rgblight_mode(RGBLIGHT_MODE_BREATHING + 0);
-            break;            
+            break;  
+        case _KBD_SET:
+            rgblight_sethsv_noeeprom(21, 255, 50); // HSV_WHITE
+            rgblight_mode(RGBLIGHT_MODE_BREATHING + 0);
+            break;
     }
 
     return state;
