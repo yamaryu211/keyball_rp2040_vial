@@ -898,12 +898,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       break;
 
     // SCRL_MO_VRT/HOR/FREの実装
+    // スクロールのデフォルトモードは垂直スクロール
     case SCRL_MO_VRT:
       keyball_set_scroll_mode(record->event.pressed);
       if (record->event.pressed) {
         keyball_set_scrollsnap_mode(KEYBALL_SCROLLSNAP_MODE_VERTICAL);
       } else {
-        keyball_set_scrollsnap_mode(KEYBALL_SCROLLSNAP_MODE_FREE);
+        keyball_set_scrollsnap_mode(KEYBALL_SCROLLSNAP_MODE_VERTICAL);
       }
       return true;
       break;
@@ -912,7 +913,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       if (record->event.pressed) {
         keyball_set_scrollsnap_mode(KEYBALL_SCROLLSNAP_MODE_HORIZONTAL);
       } else {
-        keyball_set_scrollsnap_mode(KEYBALL_SCROLLSNAP_MODE_FREE);
+        keyball_set_scrollsnap_mode(KEYBALL_SCROLLSNAP_MODE_VERTICAL);
       }
       return true;
       break;
