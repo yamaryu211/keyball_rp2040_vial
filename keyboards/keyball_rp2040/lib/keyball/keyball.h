@@ -40,15 +40,21 @@ ogram.  If not, see <http://www.gnu.org/licenses/>.
 /// To disable scroll snap feature, define 0 in your config.h
 #ifndef KEYBALL_SCROLLSNAP_ENABLE
 // スクロールモードを垂直をデフォルトとし、水平方向に一定カウント後にフリースクロールとする設定
-#    define KEYBALL_SCROLLSNAP_ENABLE 2 // 元々は2
+//#    define KEYBALL_SCROLLSNAP_ENABLE 2
+// ver1.3.2までの挙動
+// 初期状態でトラックボールによるスクロールを垂直方向に制限(スナップ)
+#    define KEYBALL_SCROLLSNAP_ENABLE 1
+// スクロールスナップを無効化
+//#    define KEYBALL_SCROLLSNAP_ENABLE 
 #endif
 
+// KEYBALL_SCROLLSNAP_ENABLE 1の場合、スナップモードに遷移するためのインターバル(ミリ秒)を設定
 #ifndef KEYBALL_SCROLLSNAP_RESET_TIMER
-#    define KEYBALL_SCROLLSNAP_RESET_TIMER 100
+#    define KEYBALL_SCROLLSNAP_RESET_TIMER 200
 #endif
-
+// KEYBALL_SCROLLSNAP_ENABLE 1の場合、スフリーモードに遷移するためのカウント数を設定
 #ifndef KEYBALL_SCROLLSNAP_TENSION_THRESHOLD
-#    define KEYBALL_SCROLLSNAP_TENSION_THRESHOLD 1 // 元々は12
+#    define KEYBALL_SCROLLSNAP_TENSION_THRESHOLD 5 // 元々は12
 #endif
 
 /// Specify SROM ID to be uploaded PMW3360DW (optical sensor).  It will be
