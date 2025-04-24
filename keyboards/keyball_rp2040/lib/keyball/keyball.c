@@ -254,11 +254,35 @@ __attribute__((weak)) void keyball_on_apply_motion_to_mouse_scroll(keyball_motio
         keyball.scroll_snap_last = now;
     } else if (TIMER_DIFF_32(now, keyball.scroll_snap_last) >= KEYBALL_SCROLLSNAP_RESET_TIMER) {
         keyball.scroll_snap_tension_h = 0;
+        keyball.scroll_snap_tension_v = 0;
     }
+    // 横方向のテンションを更新
     if (abs(keyball.scroll_snap_tension_h) < KEYBALL_SCROLLSNAP_TENSION_THRESHOLD) {
         keyball.scroll_snap_tension_h += y;
-        r->h = 0;
     }
+    // 縦方向のテンションを更新
+    if (abs(keyball.scroll_snap_tension_v) < KEYBALL_SCROLLSNAP_TENSION_THRESHOLD_VERTICAL) {
+        keyball.scroll_snap_tension_v += x;
+    }
+     // スクロールモードの判定
+    if (abs(keyball.scroll_snap_tension_h) >= KEYBALL_SCROLLSNAP_TENSION_THRESHOLD) {
+        // 横方向の閾値を超えた場合
+        if (abs(keyball.scroll_snap_tension_v) >= KEYBALL_SCROLLSNAP_TENSION_THRESHOLD_VERTICAL) {
+            // 縦方向の閾値も超えた場合は自由スクロール
+            // r->h = clip2int8(y);
+            // r->v = -clip2int8(x);
+            
+        } else {
+            // 縦方向の閾値を超えていない場合は横スクロールのみ
+            // r->h = clip2int8(y);
+            r->v = 0;
+        }
+    } else {
+        // 横方向の閾値を超えていない場合は縦スクロールのみ
+        r->h = 0;
+        //r->v = -clip2int8(x);
+    }
+
 #elif KEYBALL_SCROLLSNAP_ENABLE == 2
     // New behavior
     switch (keyball_get_scrollsnap_mode()) {

@@ -50,11 +50,15 @@ ogram.  If not, see <http://www.gnu.org/licenses/>.
 
 // KEYBALL_SCROLLSNAP_ENABLE 1の場合、スナップモードに遷移するためのインターバル(ミリ秒)を設定
 #ifndef KEYBALL_SCROLLSNAP_RESET_TIMER
-#    define KEYBALL_SCROLLSNAP_RESET_TIMER 200
+#    define KEYBALL_SCROLLSNAP_RESET_TIMER 500
 #endif
-// KEYBALL_SCROLLSNAP_ENABLE 1の場合、スフリーモードに遷移するためのカウント数を設定
+// KEYBALL_SCROLLSNAP_ENABLE 1の場合、横・自由方向のスナップモードに遷移するためのカウント数を設定
 #ifndef KEYBALL_SCROLLSNAP_TENSION_THRESHOLD
 #    define KEYBALL_SCROLLSNAP_TENSION_THRESHOLD 5 // 元々は12
+#endif
+// KEYBALL_SCROLLSNAP_ENABLE 1の場合、フリースクロールスナップモードに遷移するためのインターバル(ミリ秒)を設定
+#ifndef KEYBALL_SCROLLSNAP_TENSION_THRESHOLD_VERTICAL
+#    define KEYBALL_SCROLLSNAP_TENSION_THRESHOLD_VERTICAL 5 // 元々は12
 #endif
 
 /// Specify SROM ID to be uploaded PMW3360DW (optical sensor).  It will be
@@ -188,6 +192,7 @@ typedef struct {
 #if KEYBALL_SCROLLSNAP_ENABLE == 1
     uint32_t scroll_snap_last;
     int8_t   scroll_snap_tension_h;
+    int8_t   scroll_snap_tension_v;
 #elif KEYBALL_SCROLLSNAP_ENABLE == 2
     keyball_scrollsnap_mode_t scrollsnap_mode;
 #endif
