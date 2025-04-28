@@ -248,40 +248,62 @@ __attribute__((weak)) void keyball_on_apply_motion_to_mouse_scroll(keyball_motio
 
     // Scroll snapping
 #if KEYBALL_SCROLLSNAP_ENABLE == 1
-    // Old behavior up to 1.3.2)
+    static int scroll_snap_mode_fixed = 0; // 0:未固定, 1:縦, 2:横, 3:自由
+
     uint32_t now = timer_read32();
     if (r->h != 0 || r->v != 0) {
         keyball.scroll_snap_last = now;
+
+        // テンション値の更新
+        if (abs(keyball.scroll_snap_tension_h) < KEYBALL_SCROLLSNAP_TENSION_THRESHOLD * 3) {
+            keyball.scroll_snap_tension_h += y;
+        }
+        if (abs(keyball.scroll_snap_tension_v) < KEYBALL_SCROLLSNAP_TENSION_THRESHOLD_VERTICAL * 3) {
+            keyball.scroll_snap_tension_v += x;
+        }
+
+        // モード遷移判定
+        if (scroll_snap_mode_fixed == 0) {
+            // 未固定時（通常閾値）
+            if (abs(keyball.scroll_snap_tension_h) >= KEYBALL_SCROLLSNAP_TENSION_THRESHOLD &&
+                abs(keyball.scroll_snap_tension_v) >= KEYBALL_SCROLLSNAP_TENSION_THRESHOLD_VERTICAL) {
+                scroll_snap_mode_fixed = 3; // 自由
+            } else if (abs(keyball.scroll_snap_tension_h) >= KEYBALL_SCROLLSNAP_TENSION_THRESHOLD) {
+                scroll_snap_mode_fixed = 2; // 横
+            } else if (abs(keyball.scroll_snap_tension_v) >= KEYBALL_SCROLLSNAP_TENSION_THRESHOLD_VERTICAL) {
+                scroll_snap_mode_fixed = 1; // 縦
+            }
+        } else if (scroll_snap_mode_fixed == 1) {
+            // 縦モード中（3倍閾値）
+            if (abs(keyball.scroll_snap_tension_h) >= KEYBALL_SCROLLSNAP_TENSION_THRESHOLD * 3 &&
+                abs(keyball.scroll_snap_tension_v) >= KEYBALL_SCROLLSNAP_TENSION_THRESHOLD_VERTICAL * 3) {
+                scroll_snap_mode_fixed = 3; // 自由
+            } else if (abs(keyball.scroll_snap_tension_h) >= KEYBALL_SCROLLSNAP_TENSION_THRESHOLD * 3) {
+                scroll_snap_mode_fixed = 2; // 横
+            }
+        } else if (scroll_snap_mode_fixed == 2) {
+            // 横モード中（3倍閾値）
+            if (abs(keyball.scroll_snap_tension_h) >= KEYBALL_SCROLLSNAP_TENSION_THRESHOLD * 3 &&
+                abs(keyball.scroll_snap_tension_v) >= KEYBALL_SCROLLSNAP_TENSION_THRESHOLD_VERTICAL * 3) {
+                scroll_snap_mode_fixed = 3; // 自由
+            } else if (abs(keyball.scroll_snap_tension_v) >= KEYBALL_SCROLLSNAP_TENSION_THRESHOLD_VERTICAL * 3) {
+                scroll_snap_mode_fixed = 1; // 縦
+            }
+        }
+        // 3（自由）中は何もしない
     } else if (TIMER_DIFF_32(now, keyball.scroll_snap_last) >= KEYBALL_SCROLLSNAP_RESET_TIMER) {
         keyball.scroll_snap_tension_h = 0;
         keyball.scroll_snap_tension_v = 0;
+        scroll_snap_mode_fixed = 0;
     }
-    // 横方向のテンションを更新
-    if (abs(keyball.scroll_snap_tension_h) < KEYBALL_SCROLLSNAP_TENSION_THRESHOLD) {
-        keyball.scroll_snap_tension_h += y;
-    }
-    // 縦方向のテンションを更新
-    if (abs(keyball.scroll_snap_tension_v) < KEYBALL_SCROLLSNAP_TENSION_THRESHOLD_VERTICAL) {
-        keyball.scroll_snap_tension_v += x;
-    }
-     // スクロールモードの判定
-    if (abs(keyball.scroll_snap_tension_h) >= KEYBALL_SCROLLSNAP_TENSION_THRESHOLD) {
-        // 横方向の閾値を超えた場合
-        if (abs(keyball.scroll_snap_tension_v) >= KEYBALL_SCROLLSNAP_TENSION_THRESHOLD_VERTICAL) {
-            // 縦方向の閾値も超えた場合は自由スクロール
-            // r->h = clip2int8(y);
-            // r->v = -clip2int8(x);
-            
-        } else {
-            // 縦方向の閾値を超えていない場合は横スクロールのみ
-            // r->h = clip2int8(y);
-            r->v = 0;
-        }
-    } else {
-        // 横方向の閾値を超えていない場合は縦スクロールのみ
+
+    // --- モード固定処理 ---
+    if (scroll_snap_mode_fixed == 2) {
+        r->v = 0;
+    } else if (scroll_snap_mode_fixed == 1) {
         r->h = 0;
-        //r->v = -clip2int8(x);
     }
+    // 3（自由）は何もしない
 
 #elif KEYBALL_SCROLLSNAP_ENABLE == 2
     // New behavior
